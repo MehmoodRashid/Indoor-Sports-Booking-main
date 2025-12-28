@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  # Database Service
+  mongo:
+    image: mongo:latest
+    container_name: sports_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  # Backend Service
+  backend:
+    build: ./backend
+    container_name: sports_backend
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URI=mongodb+srv://Mehmood:mehmood123@cluster0.ufipdda.mongodb.net/IndoorSportsBooking
+      - JWT_SECRET=ProjectJWTSecret
+      - PORT=5000
+    depends_on:
+      - mongo
+
+  # Frontend Service
+  frontend:
+    build: ./frontend
+    container_name: sports_frontend
+    ports:
+      - "5173:4173" # Maps container's 4173 to your machine's 5173
+    depends_on:
+      - backend
+
+volumes:
+  mongo-data:
